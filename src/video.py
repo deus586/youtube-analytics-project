@@ -8,13 +8,18 @@ class Video:
     def __init__(self, video_id: str):
         self.__video_id = video_id
         self.__api_key = os.getenv('YT_API_KEY')
-        self.__youtube = build('youtube', 'v3', developerKey=self.__api_key)
-        self.__video = self.__youtube.videos().list(id=self.__video_id, part='snippet,statistics').execute()
-
-        self.title = self.__video['items'][0]['snippet']['title']
-        self.url = 'https://www.youtube.com/watch?v=' + self.__video_id
-        self.views = self.__video['items'][0]['statistics']['viewCount']
-        self.likes = self.__video['items'][0]['statistics']['likeCount']
+        try:
+            self.__youtube = build('youtube', 'v3', developerKey=self.__api_key)
+            self.__video = self.__youtube.videos().list(id=self.__video_id, part='snippet,statistics').execute()
+            self.title = self.__video['items'][0]['snippet']['title']
+            self.url = 'https://www.youtube.com/watch?v=' + self.__video_id
+            self.views = self.__video['items'][0]['statistics']['viewCount']
+            self.likes = self.__video['items'][0]['statistics']['likeCount']
+        except:
+            self.title = None
+            self.url = None
+            self.views = None
+            self.likes = None
 
     def __str__(self):
         return self.title
